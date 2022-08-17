@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
-
     private Vector3 targetPosition;
+    Coroutine currentMove;
+
+    //Temporary
+    Vector3 newPosition = new Vector3(3, 0, 3);
 
     // Start is called before the first frame update
     void Start()
@@ -16,25 +19,27 @@ public class Unit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float stoppingDistance = .01f;
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            if (currentMove != null)
+            {
+                StopCoroutine(currentMove);
+            }
+            currentMove = StartCoroutine(Move(newPosition));
+        }
+    }
 
-        if (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
+    IEnumerator Move(Vector3 targetPosition)
+    {
+        float stoppingDistance = .01f;
+        this.targetPosition = targetPosition;
+
+        while (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
         {
             Vector3 moveDirection = (targetPosition - transform.position).normalized;
             float moveSpeed = 4f;
             transform.position += moveDirection * moveSpeed * Time.deltaTime;
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            Move(new Vector3(3, 0, 3));
+            yield return null;
         }
     }
-
-    private void Move(Vector3 targetPosition)
-    {
-        this.targetPosition = targetPosition;
-    }
-
 }
