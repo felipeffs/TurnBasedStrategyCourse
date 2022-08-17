@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Unit : MonoBehaviour
 {
+    [SerializeField] private Animator unitAnimator;
     private Vector3 targetPosition;
     Coroutine currentMove;
 
@@ -34,6 +35,8 @@ public class Unit : MonoBehaviour
         float stoppingDistance = .01f;
         this.targetPosition = targetPosition;
 
+        unitAnimator.SetBool("IsWalking", true);
+
         while (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
         {
             Vector3 moveDirection = (targetPosition - transform.position).normalized;
@@ -41,5 +44,7 @@ public class Unit : MonoBehaviour
             transform.position += moveDirection * moveSpeed * Time.deltaTime;
             yield return null;
         }
+
+        unitAnimator.SetBool("IsWalking", false);
     }
 }
