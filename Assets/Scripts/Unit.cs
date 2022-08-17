@@ -19,13 +19,13 @@ public class Unit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.T))
+        if (Input.GetMouseButton(0))
         {
             if (currentMove != null)
             {
                 StopCoroutine(currentMove);
             }
-            currentMove = StartCoroutine(Move(newPosition));
+            currentMove = StartCoroutine(Move(MouseWorld.GetPosition()));
         }
     }
 
