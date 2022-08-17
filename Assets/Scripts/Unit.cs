@@ -7,14 +7,11 @@ public class Unit : MonoBehaviour
     [SerializeField] private Animator unitAnimator;
     private Vector3 targetPosition;
     Coroutine currentMove;
+    int IsWalkingHash;
 
-    //Temporary
-    Vector3 newPosition = new Vector3(3, 0, 3);
-
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-
+        IsWalkingHash = Animator.StringToHash("IsWalking");
     }
 
     // Update is called once per frame
@@ -35,7 +32,7 @@ public class Unit : MonoBehaviour
         float stoppingDistance = .01f;
         this.targetPosition = targetPosition;
 
-        unitAnimator.SetBool("IsWalking", true);
+        unitAnimator.SetBool(IsWalkingHash, true);
 
         while (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
         {
@@ -45,6 +42,6 @@ public class Unit : MonoBehaviour
             yield return null;
         }
 
-        unitAnimator.SetBool("IsWalking", false);
+        unitAnimator.SetBool(IsWalkingHash, false);
     }
 }
