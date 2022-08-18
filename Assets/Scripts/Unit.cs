@@ -6,7 +6,7 @@ public class Unit : MonoBehaviour
 {
     [SerializeField] private Animator unitAnimator;
     private Vector3 targetPosition;
-    Coroutine currentMove;
+    private Coroutine currentCO_Move;
     int IsWalkingHash;
 
     private void Awake()
@@ -14,20 +14,16 @@ public class Unit : MonoBehaviour
         IsWalkingHash = Animator.StringToHash("IsWalking");
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Move(Vector3 targetPosition)
     {
-        if (Input.GetMouseButton(0))
+        if (currentCO_Move != null)
         {
-            if (currentMove != null)
-            {
-                StopCoroutine(currentMove);
-            }
-            currentMove = StartCoroutine(Move(MouseWorld.GetPosition()));
+            StopCoroutine(currentCO_Move);
         }
+        currentCO_Move = StartCoroutine(CO_Move(targetPosition));
     }
 
-    IEnumerator Move(Vector3 targetPosition)
+    private IEnumerator CO_Move(Vector3 targetPosition)
     {
         float stoppingDistance = .01f;
         this.targetPosition = targetPosition;
