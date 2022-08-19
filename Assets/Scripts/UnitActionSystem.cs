@@ -5,9 +5,23 @@ using System;
 
 public class UnitActionSystem : MonoBehaviour
 {
+    public static UnitActionSystem Instance { get; private set; }
+
     public event EventHandler OnSelectedUnitChanged;
+
     private Unit selectedUnit;
     [SerializeField] private LayerMask unitsLayerMask;
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Debug.LogError($"There's more than one UnitActionSystem! {transform} - {Instance}");
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
 
     void Update()
     {
@@ -24,7 +38,7 @@ public class UnitActionSystem : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit raycastHit, float.MaxValue, unitsLayerMask))
         {
-            if (raycastHit.collider.TryGetComponent<Unit>(out Unit unit))
+            if (raycastHit.transform.TryGetComponent<Unit>(out Unit unit))
             {
                 SetSelectedUnit(unit);
                 return true;
