@@ -41,12 +41,31 @@ public class GridSystem
 
     public void CreateDebugObjects(Transform debugPrefab)
     {
+
+        #region "Definindo o objeto guarda-chuva dos objetos de depuração"
+
+        string gridDebugParentName = "GridDebugObjects";
+        GameObject gridDebugParent = GameObject.Find(gridDebugParentName);
+
+        if (!gridDebugParent)
+        {
+            gridDebugParent = new GameObject(gridDebugParentName);
+        }
+
+        #endregion
+
         for (int x = 0; x < width; x++)
         {
             for (int z = 0; z < height; z++)
             {
                 GridPosition gridPosition = new GridPosition(x, z);
                 Transform debugTransform = GameObject.Instantiate(debugPrefab, debugPrefab.transform.position + GetWorldPosition(gridPosition), Quaternion.identity);
+                #region "Colocando como filho do objeto guarda-chuva e definindo um nome melhor"
+
+                debugTransform.SetParent(gridDebugParent.transform);
+                debugTransform.gameObject.name = $"GridDebug({x},{z})";
+
+                #endregion
                 GridDebugObject gridDebugObject = debugTransform.GetComponent<GridDebugObject>();
                 gridDebugObject.setGridObject(GetGridObject(gridPosition));
             }
