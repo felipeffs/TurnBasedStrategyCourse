@@ -12,6 +12,6 @@ public struct GridPosition
 
     public override string ToString()
     {
-        return $"(x: {x}, z: {z})";
+        return $"(x:{x}, z:{z})";
     }
 }
