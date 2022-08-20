@@ -7,12 +7,7 @@ public class Unit : MonoBehaviour
     [SerializeField] private Animator unitAnimator;
     private Vector3 targetPosition;
     private Coroutine currentCO_Move;
-    int IsWalkingHash;
-
-    private void Awake()
-    {
-        IsWalkingHash = Animator.StringToHash("IsWalking");
-    }
+    private readonly int isWalkingHash = Animator.StringToHash("IsWalking");
 
     public void Move(Vector3 targetPosition)
     {
@@ -28,7 +23,7 @@ public class Unit : MonoBehaviour
         float stoppingDistance = .01f;
         this.targetPosition = targetPosition;
 
-        unitAnimator.SetBool(IsWalkingHash, true);
+        unitAnimator.SetBool(isWalkingHash, true);
 
         while (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
         {
@@ -42,6 +37,6 @@ public class Unit : MonoBehaviour
             yield return null;
         }
 
-        unitAnimator.SetBool(IsWalkingHash, false);
+        unitAnimator.SetBool(isWalkingHash, false);
     }
 }
