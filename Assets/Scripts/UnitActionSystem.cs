@@ -29,7 +29,7 @@ public class UnitActionSystem : MonoBehaviour
         {
             if (TryHandleUnitSelection()) return;
             if (selectedUnit == null) return;
-            selectedUnit.Move(MouseWorld.GetPosition());
+            selectedUnit.GetMoveAction().Move(MouseWorld.GetPosition());
         }
     }
 
