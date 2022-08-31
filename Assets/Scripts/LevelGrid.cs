@@ -56,4 +56,14 @@ public class LevelGrid : MonoBehaviour
         var gridObject = gridSystem.GetGridObject(gridPosition);
         return gridObject.HasAnyUnty();
     }
+
+    public int GetWidth()
+    {
+        return gridSystem.GetWidth();
+    }
+
+    public int GetHeight()
+    {
+        return gridSystem.GetHeight();
+    }
 }
