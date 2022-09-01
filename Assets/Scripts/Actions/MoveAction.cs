@@ -2,20 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveAction : MonoBehaviour
+public class MoveAction : BaseAction
 {
     [SerializeField] private Animator unitAnimator;
     [SerializeField] private int maxMoveDistance = 4;
 
     private Coroutine currentCO_Move;
-    private Unit unit;
 
     private readonly int isWalkingHash = Animator.StringToHash("IsWalking");
-
-    private void Awake()
-    {
-        unit = GetComponent<Unit>();
-    }
 
     public void Move(GridPosition gridPosition)
     {
@@ -41,7 +35,7 @@ public class MoveAction : MonoBehaviour
             transform.position += moveDirection * moveSpeed * Time.deltaTime;
 
             float rotateSpeed = 10f;
-            transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed); ;
+            transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
 
             yield return null;
         }
