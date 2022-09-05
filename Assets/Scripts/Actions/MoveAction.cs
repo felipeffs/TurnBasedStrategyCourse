@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class MoveAction : BaseAction
 {
     [SerializeField] private Animator unitAnimator;
@@ -11,9 +11,11 @@ public class MoveAction : BaseAction
 
     private readonly int isWalkingHash = Animator.StringToHash("IsWalking");
 
-    public void Move(GridPosition gridPosition)
+    public void Move(GridPosition gridPosition, Action onActionComplete)
     {
         var targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+
+        this.onActionComplete = onActionComplete;
 
         if (currentCO_Move != null)
         {
@@ -41,6 +43,7 @@ public class MoveAction : BaseAction
         }
 
         unitAnimator.SetBool(isWalkingHash, false);
+        onActionComplete();
     }
 
     public bool IsValidActionGridPosition(GridPosition gridPosition)

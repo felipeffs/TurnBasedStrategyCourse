@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 public abstract class BaseAction : MonoBehaviour
 {
     protected Unit unit;
+    protected Action onActionComplete;
 
     protected virtual void Awake()
     {

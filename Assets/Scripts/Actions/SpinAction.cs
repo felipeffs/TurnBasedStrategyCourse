@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,12 +22,14 @@ public class SpinAction : BaseAction
         if (totalSpinAmount >= ONE_LAP_ROTATION)
         {
             isActive = false;
+            onActionComplete();
         }
     }
 
 
-    public void Spin()
+    public void Spin(Action onActionComplete)
     {
+        this.onActionComplete = onActionComplete;
         isActive = true;
         totalSpinAmount = 0f;
     }
