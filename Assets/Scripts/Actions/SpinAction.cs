@@ -26,11 +26,15 @@ public class SpinAction : BaseAction
         }
     }
 
-
     public void Spin(Action onActionComplete)
     {
         this.onActionComplete = onActionComplete;
         isActive = true;
         totalSpinAmount = 0f;
+    }
+
+    public override string GetActionName()
+    {
+        return "Spin";
     }
 }
