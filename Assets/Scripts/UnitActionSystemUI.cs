@@ -18,6 +18,7 @@ public class UnitActionSystemUI : MonoBehaviour
     {
         UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
         UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
+        UnitActionSystem.Instance.OnBusyChanged += UnitActionSystem_OnBusyChanged;
 
         CreateUnitActionButtons();
         UpdateSelectedVisual();
@@ -63,5 +64,15 @@ public class UnitActionSystemUI : MonoBehaviour
         {
             actionButtonUI.UpdateSelectedVisual();
         }
+    }
+
+    public void UnitActionSystem_OnBusyChanged(object sender, bool isBusy)
+    {
+        UpdateActionButtonContainerOnBusy(isBusy);
+    }
+
+    public void UpdateActionButtonContainerOnBusy(bool isBusy)
+    {
+        actionButtonContainerTransform.gameObject.SetActive(!isBusy);
     }
 }
