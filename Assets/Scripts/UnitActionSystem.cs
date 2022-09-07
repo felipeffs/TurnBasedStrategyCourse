@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.EventSystems;
 
 public class UnitActionSystem : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class UnitActionSystem : MonoBehaviour
     {
         if (isBusy) return;
 
+        if (EventSystem.current.IsPointerOverGameObject()) return;
         if (TryHandleUnitSelection()) return;
         HandleSelectedAction();
     }
@@ -42,19 +44,10 @@ public class UnitActionSystem : MonoBehaviour
 
             GridPosition mouseGridPosition = LevelGrid.Instance.GetGridPosition(MouseWorld.GetPosition());
 
-            switch (selectedAction)
+            if (selectedAction.IsValidActionGridPosition(mouseGridPosition))
             {
-                case MoveAction moveAction:
-                    if (moveAction.IsValidActionGridPosition(mouseGridPosition))
-                    {
-                        SetBusy();
-                        moveAction.Move(mouseGridPosition, ClearBusy);
-                    }
-                    break;
-                case SpinAction spinAction:
-                    SetBusy();
-                    spinAction.Spin(ClearBusy);
-                    break;
+                SetBusy();
+                selectedAction.TakeAction(mouseGridPosition, ClearBusy);
             }
         }
     }
@@ -78,6 +71,7 @@ public class UnitActionSystem : MonoBehaviour
         {
             if (raycastHit.transform.TryGetComponent<Unit>(out Unit unit))
             {
+                if (unit == selectedUnit) return false;
                 SetSelectedUnit(unit);
                 return true;
             }
@@ -101,5 +95,10 @@ public class UnitActionSystem : MonoBehaviour
     public Unit GetSelectedUnit()
     {
         return selectedUnit;
+    }
+
+    public BaseAction GetSelectedAction()
+    {
+        return selectedAction;
     }
 }
