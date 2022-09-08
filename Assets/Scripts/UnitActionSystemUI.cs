@@ -2,11 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class UnitActionSystemUI : MonoBehaviour
 {
     [SerializeField] private Transform actionButtonPrefab;
     [SerializeField] private Transform actionButtonContainerTransform;
+    [SerializeField] private TextMeshProUGUI actionPointsText;
+
     private List<ActionButtonUI> actionButtonUIList;
 
     private void Awake()
@@ -19,9 +22,12 @@ public class UnitActionSystemUI : MonoBehaviour
         UnitActionSystem.Instance.OnSelectedUnitChanged += UnitActionSystem_OnSelectedUnitChanged;
         UnitActionSystem.Instance.OnSelectedActionChanged += UnitActionSystem_OnSelectedActionChanged;
         UnitActionSystem.Instance.OnBusyChanged += UnitActionSystem_OnBusyChanged;
+        UnitActionSystem.Instance.OnActionStarted += UnitActionSystem_OnActionStarted;
 
         CreateUnitActionButtons();
         UpdateSelectedVisual();
+        UpdateActionPoints();
+        UpdateActionPointsTextVisibility(false);
     }
 
     private void CreateUnitActionButtons()
@@ -51,6 +57,8 @@ public class UnitActionSystemUI : MonoBehaviour
     {
         CreateUnitActionButtons();
         UpdateSelectedVisual();
+        UpdateActionPoints();
+        UpdateActionPointsTextVisibility(true);
     }
 
     private void UnitActionSystem_OnSelectedActionChanged(object sender, EventArgs e)
@@ -69,10 +77,30 @@ public class UnitActionSystemUI : MonoBehaviour
     public void UnitActionSystem_OnBusyChanged(object sender, bool isBusy)
     {
         UpdateActionButtonContainerOnBusy(isBusy);
+        UpdateActionPointsTextVisibility(!isBusy);
+    }
+
+    public void UnitActionSystem_OnActionStarted(object sender, EventArgs e)
+    {
+        UpdateActionPoints();
     }
 
     public void UpdateActionButtonContainerOnBusy(bool isBusy)
     {
         actionButtonContainerTransform.gameObject.SetActive(!isBusy);
+    }
+
+    private void UpdateActionPoints()
+    {
+        Unit selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
+
+        if (selectedUnit == null) return;
+
+        actionPointsText.text = $"Action Points: {selectedUnit.GetActionPoints()}";
+    }
+
+    private void UpdateActionPointsTextVisibility(bool isBusy)
+    {
+        actionPointsText.gameObject.SetActive(isBusy);
     }
 }

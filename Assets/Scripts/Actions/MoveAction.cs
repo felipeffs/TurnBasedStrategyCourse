@@ -26,11 +26,11 @@ public class MoveAction : BaseAction
 
     private IEnumerator CO_Move(Vector3 targetPosition)
     {
-        float stoppingDistance = .01f;
+        const float StoppingDistance = .05f;
 
         unitAnimator.SetBool(isWalkingHash, true);
 
-        while (Vector3.Distance(transform.position, targetPosition) > stoppingDistance)
+        while (Vector3.Distance(transform.position, targetPosition) > StoppingDistance)
         {
             Vector3 moveDirection = (targetPosition - transform.position).normalized;
             float moveSpeed = 4f;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SpinAction : BaseAction
 {
-    private const float ONE_LAP_ROTATION = 360f;
+    private const float OneLapRotation = 360f;
 
     private float totalSpinAmount;
     private bool isActive;
@@ -14,12 +14,12 @@ public class SpinAction : BaseAction
     {
         if (!isActive) return;
 
-        float spinAddAmount = ONE_LAP_ROTATION * Time.deltaTime;
+        float spinAddAmount = OneLapRotation * Time.deltaTime;
         transform.eulerAngles += new Vector3(0, spinAddAmount, 0);
 
         totalSpinAmount += spinAddAmount;
 
-        if (totalSpinAmount >= ONE_LAP_ROTATION)
+        if (totalSpinAmount >= OneLapRotation)
         {
             isActive = false;
             onActionComplete();
@@ -43,5 +43,10 @@ public class SpinAction : BaseAction
         GridPosition unitGridPosition = unit.GetGridPosition();
 
         return new List<GridPosition> { unitGridPosition };
+    }
+
+    public override int GetActionPointsCost()
+    {
+        return 2;
     }
 }
