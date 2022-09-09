@@ -7,85 +7,109 @@ public class ShootAction : BaseAction
 {
     private enum State
     {
+        Initial,
         Aiming,
         Shooting,
         Cooloff
     }
 
+    [SerializeField] private float aimingStateDuration = 2f;
+    [SerializeField] private float shootingStateDurationPerShot = .1f;
+    [SerializeField] private float coolOffStateDuration = .5f;
+
     private int maxShootDistance = 7;
-    private State state;
-    private float stateTimer;
+    private State currentState;
     private Unit targetUnit;
-    private bool canShootBullet;
+    private int currentBullets;
+    [SerializeField] private int maxBullets = 2;
+    private bool canShoot = true;
+    private bool isStateFirstCycle = true;
 
-    private void Update()
+    public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        if (!isActive)
-        {
-            return;
-        }
+        this.onActionComplete = onActionComplete;
 
-        stateTimer -= Time.deltaTime;
-        switch (state)
-        {
-            case State.Aiming:
-                Aim();
-                break;
-            case State.Shooting:
-                if (canShootBullet)
-                {
-                    Shoot();
-                    canShootBullet = false;
-                }
-                break;
-            case State.Cooloff:
-                break;
-        }
+        targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
 
-        if (stateTimer <= 0f)
-        {
-            NextState();
-        }
-    }
-
-    private void Aim()
-    {
-        Vector3 AimDirection = (targetUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
-
-        float rotateSpeed = 10f;
-        transform.forward = Vector3.Lerp(transform.forward, AimDirection, Time.deltaTime * rotateSpeed);
-    }
-
-    private void Shoot()
-    {
-        targetUnit.Damage();
+        currentState = State.Initial;
+        NextState();
     }
 
     private void NextState()
     {
-        switch (state)
+        isStateFirstCycle = true;
+
+        switch (currentState)
         {
+            case State.Initial:
+                DoState(Aim, aimingStateDuration, State.Aiming);
+                break;
             case State.Aiming:
-                state = State.Shooting;
-                float shootingStateTime = .1f;
-                stateTimer = shootingStateTime;
+                float shootingStateEndDelay = .05f;
+                float shootingStateDuration = shootingStateDurationPerShot * maxBullets + shootingStateEndDelay;
+                DoState(Shoot, shootingStateDuration, State.Shooting);
                 break;
             case State.Shooting:
-                state = State.Cooloff;
-                float coolOffStateTime = .5f;
-                stateTimer = coolOffStateTime;
+                DoState(() => { }, coolOffStateDuration, State.Cooloff);
                 break;
             case State.Cooloff:
-                ActionComplete();
+                onActionComplete();
                 break;
         }
 
-        Debug.Log(state);
+        Debug.Log(currentState);
     }
 
-    public override string GetActionName()
+    private void Aim()
     {
-        return "Shoot";
+        Vector3 aimDirection = (targetUnit.GetWorldPosition() - unit.GetWorldPosition()).normalized;
+
+        float rotateSpeed = 10f;
+        transform.forward = Vector3.Lerp(transform.forward, aimDirection, Time.deltaTime * rotateSpeed);
+    }
+
+    private void Shoot()
+    {
+        if (isStateFirstCycle)
+        {
+            currentBullets = maxBullets;
+            canShoot = true;
+            isStateFirstCycle = false;
+        }
+
+        if (currentBullets == 0) return;
+        if (!canShoot) return;
+
+        targetUnit.Damage();
+
+        currentBullets--;
+        canShoot = false;
+        StartCoroutine(CO_Wait(shootingStateDurationPerShot, () => { canShoot = true; }));
+    }
+
+    private void DoState(Action stateBehaviour, float durationInSeconds, State newState)
+    {
+        currentState = newState;
+        StartCoroutine(CO_DoState(stateBehaviour, durationInSeconds));
+    }
+
+    private IEnumerator CO_DoState(Action stateBehaviour, float durationInSeconds)
+    {
+        float currentTimer = durationInSeconds;
+        while (currentTimer > 0f)
+        {
+            stateBehaviour();
+            yield return null;
+            currentTimer -= Time.deltaTime;
+        }
+
+        NextState();
+    }
+
+    private IEnumerator CO_Wait(float timeToWaitInSeconds, Action Method)
+    {
+        yield return new WaitForSeconds(timeToWaitInSeconds);
+        Method();
     }
 
     public override List<GridPosition> GetValidActionGridPositionList()
@@ -119,17 +143,8 @@ public class ShootAction : BaseAction
         return validGridPositionList;
     }
 
-    public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
+    public override string GetActionName()
     {
-        ActionStart(onActionComplete);
-
-        targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(gridPosition);
-
-        Debug.Log("Aiming");
-        state = State.Aiming;
-        float aimingStateTime = 2f;
-        stateTimer = aimingStateTime;
-
-        canShootBullet = true;
+        return "Shoot";
     }
 }
