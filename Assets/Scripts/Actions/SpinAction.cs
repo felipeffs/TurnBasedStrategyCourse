@@ -8,7 +8,6 @@ public class SpinAction : BaseAction
     private const float ONE_LAP_ROTATION_DEGREES = 360f;
 
     private float totalSpinAmount;
-    private bool isActive;
 
     private void Update()
     {
@@ -21,15 +20,13 @@ public class SpinAction : BaseAction
 
         if (totalSpinAmount >= ONE_LAP_ROTATION_DEGREES)
         {
-            isActive = false;
-            onActionComplete();
+            ActionComplete();
         }
     }
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        this.onActionComplete = onActionComplete;
-        isActive = true;
+        ActionStart(onActionComplete);
         totalSpinAmount = 0f;
     }
 
