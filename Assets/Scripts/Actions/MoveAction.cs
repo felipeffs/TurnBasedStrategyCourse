@@ -15,9 +15,14 @@ public class MoveAction : BaseAction
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        var targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
-
         this.onActionComplete = onActionComplete;
+
+        Move(gridPosition);
+    }
+
+    private void Move(GridPosition gridPosition)
+    {
+        var targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
 
         if (currentCO_Move != null)
         {
