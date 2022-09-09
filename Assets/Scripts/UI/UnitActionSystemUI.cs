@@ -24,6 +24,7 @@ public class UnitActionSystemUI : MonoBehaviour
         UnitActionSystem.Instance.OnBusyChanged += UnitActionSystem_OnBusyChanged;
         UnitActionSystem.Instance.OnActionStarted += UnitActionSystem_OnActionStarted;
         Unit.OnAnyActionPointsChanged += Unit_OnAnyActionPointsChanged;
+        TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
 
         CreateUnitActionButtons();
         UpdateSelectedVisual();
@@ -77,7 +78,7 @@ public class UnitActionSystemUI : MonoBehaviour
 
     public void UnitActionSystem_OnBusyChanged(object sender, bool isBusy)
     {
-        UpdateActionButtonContainerOnBusy(isBusy);
+        UpdateActionButtonContainerVisibility(!isBusy);
         UpdateActionPointsTextVisibility(!isBusy);
     }
 
@@ -91,9 +92,16 @@ public class UnitActionSystemUI : MonoBehaviour
         UpdateActionPoints();
     }
 
-    public void UpdateActionButtonContainerOnBusy(bool isBusy)
+    public void TurnSystem_OnTurnChanged(object sender, EventArgs e)
     {
-        actionButtonContainerTransform.gameObject.SetActive(!isBusy);
+        UpdateActionButtonContainerVisibility(TurnSystem.Instance.IsPlayerTurn());
+    }
+
+    public void UpdateActionButtonContainerVisibility(bool isActive)
+    {
+        if (!TurnSystem.Instance.IsPlayerTurn()) isActive = false;
+        
+        actionButtonContainerTransform.gameObject.SetActive(isActive);
     }
 
     private void UpdateActionPoints()
@@ -107,6 +115,8 @@ public class UnitActionSystemUI : MonoBehaviour
 
     private void UpdateActionPointsTextVisibility(bool isBusy)
     {
+        if (!TurnSystem.Instance.IsPlayerTurn()) return;
+
         actionPointsText.gameObject.SetActive(isBusy);
     }
 }
