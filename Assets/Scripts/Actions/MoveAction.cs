@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 public class MoveAction : BaseAction
 {
+    private const float STOPPING_DISTANCE = .05f;
+
     [SerializeField] private Animator unitAnimator;
     [SerializeField] private int maxMoveDistance = 4;
 
@@ -26,11 +28,9 @@ public class MoveAction : BaseAction
 
     private IEnumerator CO_Move(Vector3 targetPosition)
     {
-        const float StoppingDistance = .05f;
-
         unitAnimator.SetBool(isWalkingHash, true);
 
-        while (Vector3.Distance(transform.position, targetPosition) > StoppingDistance)
+        while (Vector3.Distance(transform.position, targetPosition) > STOPPING_DISTANCE)
         {
             Vector3 moveDirection = (targetPosition - transform.position).normalized;
             float moveSpeed = 4f;

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SpinAction : BaseAction
 {
-    private const float OneLapRotation = 360f;
+    private const float ONE_LAP_ROTATION_DEGREES = 360f;
 
     private float totalSpinAmount;
     private bool isActive;
@@ -14,12 +14,12 @@ public class SpinAction : BaseAction
     {
         if (!isActive) return;
 
-        float spinAddAmount = OneLapRotation * Time.deltaTime;
+        float spinAddAmount = ONE_LAP_ROTATION_DEGREES * Time.deltaTime;
         transform.eulerAngles += new Vector3(0, spinAddAmount, 0);
 
         totalSpinAmount += spinAddAmount;
 
-        if (totalSpinAmount >= OneLapRotation)
+        if (totalSpinAmount >= ONE_LAP_ROTATION_DEGREES)
         {
             isActive = false;
             onActionComplete();
