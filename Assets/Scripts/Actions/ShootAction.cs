@@ -13,8 +13,14 @@ public class ShootAction : BaseAction
         Cooloff
     }
 
-    public event EventHandler OnShoot;
-    
+    public event EventHandler<OnShootEventArgs> OnShoot;
+
+    public class OnShootEventArgs : EventArgs
+    {
+        public Unit targetUnit;
+        public Unit shootingUnit;
+    }
+
     [SerializeField] private float aimingStateDuration = 2f;
     [SerializeField] private float shootingStateDurationPerShot = .1f;
     [SerializeField] private float coolOffStateDuration = .5f;
@@ -82,7 +88,12 @@ public class ShootAction : BaseAction
         if (currentBullets == 0) return;
         if (!canShoot) return;
 
-        OnShoot?.Invoke(this, EventArgs.Empty);
+        OnShoot?.Invoke(this, new OnShootEventArgs
+        {
+            targetUnit = this.targetUnit,
+            shootingUnit = unit
+        });
+
         targetUnit.Damage();
 
         currentBullets--;
