@@ -6,12 +6,12 @@ public class MoveAction : BaseAction
 {
     private const float STOPPING_DISTANCE = .05f;
 
-    [SerializeField] private Animator unitAnimator;
+    public event EventHandler OnStartMoving;
+    public event EventHandler OnStopMoving;
+
     [SerializeField] private int maxMoveDistance = 4;
 
     private Coroutine currentCO_Move;
-
-    private readonly int isWalkingHash = Animator.StringToHash("IsWalking");
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
@@ -33,7 +33,7 @@ public class MoveAction : BaseAction
 
     private IEnumerator CO_Move(Vector3 targetPosition)
     {
-        unitAnimator.SetBool(isWalkingHash, true);
+        OnStartMoving?.Invoke(this, EventArgs.Empty);
 
         while (Vector3.Distance(transform.position, targetPosition) > STOPPING_DISTANCE)
         {
@@ -47,7 +47,7 @@ public class MoveAction : BaseAction
             yield return null;
         }
 
-        unitAnimator.SetBool(isWalkingHash, false);
+        OnStopMoving?.Invoke(this, EventArgs.Empty);
         onActionComplete();
     }
 
