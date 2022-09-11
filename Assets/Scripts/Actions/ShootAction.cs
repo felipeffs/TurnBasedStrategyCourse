@@ -85,6 +85,7 @@ public class ShootAction : BaseAction
             isStateFirstCycle = false;
         }
 
+        if (targetUnit == null) return;
         if (currentBullets == 0) return;
         if (!canShoot) return;
 
@@ -94,7 +95,7 @@ public class ShootAction : BaseAction
             shootingUnit = unit
         });
 
-        targetUnit.Damage();
+        targetUnit.Damage(40);
 
         currentBullets--;
         canShoot = false;
