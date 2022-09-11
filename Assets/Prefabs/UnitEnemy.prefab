@@ -77,5 +77,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4295488943810837384, guid: 41738e18cd7212b4699bb0a08ff2e5f1,
+        type: 3}
+      propertyPath: ragdollPrefab
+      value: 
+      objectReference: {fileID: 1114969601778508218, guid: eca0e637510621941a5d3bcd1e19a264,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41738e18cd7212b4699bb0a08ff2e5f1, type: 3}
