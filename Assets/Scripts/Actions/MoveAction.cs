@@ -15,9 +15,9 @@ public class MoveAction : BaseAction
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        this.onActionComplete = onActionComplete;
-
         Move(gridPosition);
+
+        ActionStart(onActionComplete);
     }
 
     private void Move(GridPosition gridPosition)
@@ -48,7 +48,7 @@ public class MoveAction : BaseAction
         }
 
         OnStopMoving?.Invoke(this, EventArgs.Empty);
-        onActionComplete();
+        ActionComplete();
     }
 
     public override List<GridPosition> GetValidActionGridPositionList()

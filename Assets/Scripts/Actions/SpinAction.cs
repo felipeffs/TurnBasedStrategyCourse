@@ -12,9 +12,9 @@ public class SpinAction : BaseAction
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        this.onActionComplete = onActionComplete;
-
         Spin();
+
+        ActionStart(onActionComplete);
     }
 
     private void Spin()
@@ -39,7 +39,7 @@ public class SpinAction : BaseAction
 
             yield return null;
         }
-        onActionComplete();
+        ActionComplete();
     }
 
     public override string GetActionName()

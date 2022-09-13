@@ -41,6 +41,8 @@ public class ShootAction : BaseAction
 
         currentState = State.Initial;
         NextState();
+
+        ActionStart(onActionComplete);
     }
 
     private void NextState()
@@ -61,7 +63,7 @@ public class ShootAction : BaseAction
                 DoState(() => { }, coolOffStateDuration, State.Cooloff);
                 break;
             case State.Cooloff:
-                onActionComplete();
+                ActionComplete();
                 break;
         }
 
@@ -161,5 +163,10 @@ public class ShootAction : BaseAction
     public override string GetActionName()
     {
         return "Shoot";
+    }
+
+    public Unit GetTargetUnit()
+    {
+        return targetUnit;
     }
 }
