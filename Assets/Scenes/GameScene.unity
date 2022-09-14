@@ -396,8 +396,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
-  m_LocalRotation: {x: 0.35579354, y: 0.10944711, z: -0.0419988, w: 0.9271831}
-  m_LocalPosition: {x: -1.968408, y: 9.000001, z: -8.475148}
+  m_LocalRotation: {x: 0.4212308, y: 0.10616107, z: -0.04972318, w: 0.8993454}
+  m_LocalPosition: {x: -1.968408, y: 12, z: -8.475148}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -655,7 +655,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
-  m_FollowOffset: {x: 0, y: 9.000001, z: -10}
+  m_FollowOffset: {x: 0, y: 12, z: -10}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0
@@ -1929,7 +1929,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7801857, y: 1}
+    m_SensorSize: {x: 1.7770898, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -1945,8 +1945,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1185535265}
-  m_LocalRotation: {x: 0.35579354, y: 0.10944711, z: -0.0419988, w: 0.9271831}
-  m_LocalPosition: {x: -1.968408, y: 9.000001, z: -8.475148}
+  m_LocalRotation: {x: 0.4212308, y: 0.10616107, z: -0.04972318, w: 0.8993454}
+  m_LocalPosition: {x: -1.968408, y: 12, z: -8.475148}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2023,6 +2023,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridSystemVisualSinglePrefab: {fileID: 5773024499565362875, guid: 8a09f9af83f46c54ba425cdeee747445,
     type: 3}
+  gridVisualTypeMaterialList:
+  - gridVisualType: 0
+    material: {fileID: 2100000, guid: 5c866a3c5147a3c4fafda8407c8d87c4, type: 2}
+  - gridVisualType: 1
+    material: {fileID: 2100000, guid: 29c8c174246b0794d91fc6f1ae871a99, type: 2}
+  - gridVisualType: 2
+    material: {fileID: 2100000, guid: 07861cf27123e2f49b00caef66853dc0, type: 2}
+  - gridVisualType: 3
+    material: {fileID: 2100000, guid: 6f17415355d28e74598427610fd81957, type: 2}
+  - gridVisualType: 4
+    material: {fileID: 2100000, guid: d7489fc95caaf374d88653e8cf6bca66, type: 2}
 --- !u!4 &1319434179
 Transform:
   m_ObjectHideFlags: 0
