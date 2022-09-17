@@ -95,12 +95,20 @@ public class UnitActionSystemUI : MonoBehaviour
     public void TurnSystem_OnTurnChanged(object sender, EventArgs e)
     {
         UpdateActionButtonContainerVisibility(TurnSystem.Instance.IsPlayerTurn());
+
+        if (UnitActionSystem.Instance.GetSelectedUnit() == null)
+        {
+            CreateUnitActionButtons();
+            return;
+        }
+
+        UpdateActionPointsTextVisibility(TurnSystem.Instance.IsPlayerTurn());
     }
 
     public void UpdateActionButtonContainerVisibility(bool isActive)
     {
         if (!TurnSystem.Instance.IsPlayerTurn()) isActive = false;
-        
+
         actionButtonContainerTransform.gameObject.SetActive(isActive);
     }
 
@@ -113,10 +121,9 @@ public class UnitActionSystemUI : MonoBehaviour
         actionPointsText.text = $"Action Points: {selectedUnit.GetActionPoints()}";
     }
 
-    private void UpdateActionPointsTextVisibility(bool isBusy)
+    private void UpdateActionPointsTextVisibility(bool isActive)
     {
-        if (!TurnSystem.Instance.IsPlayerTurn()) return;
-
-        actionPointsText.gameObject.SetActive(isBusy);
+        actionPointsText.gameObject.SetActive(isActive);
     }
+
 }
