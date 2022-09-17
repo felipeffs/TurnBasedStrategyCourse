@@ -7,6 +7,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -3002222509962064530, guid: 41738e18cd7212b4699bb0a08ff2e5f1,
+        type: 3}
+      propertyPath: maxBullets
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1781343730164064983, guid: 41738e18cd7212b4699bb0a08ff2e5f1,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -30,7 +35,7 @@ PrefabInstance:
     - target: {fileID: 1824471160578721815, guid: 41738e18cd7212b4699bb0a08ff2e5f1,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1824471160578721815, guid: 41738e18cd7212b4699bb0a08ff2e5f1,
         type: 3}
@@ -40,7 +45,7 @@ PrefabInstance:
     - target: {fileID: 1824471160578721815, guid: 41738e18cd7212b4699bb0a08ff2e5f1,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1824471160578721815, guid: 41738e18cd7212b4699bb0a08ff2e5f1,
         type: 3}
