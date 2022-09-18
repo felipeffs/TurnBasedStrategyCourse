@@ -68,7 +68,7 @@ public class GridSystem<TGridObject>
 
                 #endregion
                 GridDebugObject gridDebugObject = debugTransform.GetComponent<GridDebugObject>();
-                gridDebugObject.setGridObject(GetGridObject(gridPosition) as GridObject);
+                gridDebugObject.SetGridObject(GetGridObject(gridPosition));
             }
         }
     }

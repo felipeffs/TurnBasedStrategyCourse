@@ -5,15 +5,15 @@ using TMPro;
 
 public class GridDebugObject : MonoBehaviour
 {
-    private GridObject gridObject;
+    private object gridObject;
     [SerializeField] private TextMeshPro gridText;
 
-    private void Update()
+    protected virtual void Update()
     {
         gridText.text = gridObject.ToString();
     }
 
-    public void setGridObject(GridObject gridObject)
+    public virtual void SetGridObject(object gridObject)
     {
         this.gridObject = gridObject;
     }
