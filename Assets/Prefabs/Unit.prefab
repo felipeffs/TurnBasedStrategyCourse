@@ -108,6 +108,9 @@ MonoBehaviour:
   aimingStateDuration: 2
   shootingStateDurationPerShot: 0.1
   coolOffStateDuration: 0.5
+  obstaclesLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
   maxBullets: 2
 --- !u!114 &7699679515063358998
 MonoBehaviour:

@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class ShootAction : BaseAction
 {
+    public class OnShootEventArgs : EventArgs
+    {
+        public Unit targetUnit;
+        public Unit shootingUnit;
+    }
+
     private enum State
     {
         Initial,
@@ -15,21 +21,16 @@ public class ShootAction : BaseAction
 
     public event EventHandler<OnShootEventArgs> OnShoot;
 
-    public class OnShootEventArgs : EventArgs
-    {
-        public Unit targetUnit;
-        public Unit shootingUnit;
-    }
-
     [SerializeField] private float aimingStateDuration = 2f;
     [SerializeField] private float shootingStateDurationPerShot = .1f;
     [SerializeField] private float coolOffStateDuration = .5f;
 
+    [SerializeField] private LayerMask obstaclesLayerMask;
+    [SerializeField] private int maxBullets = 2;
     private int maxShootDistance = 7;
     private State currentState;
     private Unit targetUnit;
     private int currentBullets;
-    [SerializeField] private int maxBullets = 2;
     private bool canShoot = true;
     private bool isStateFirstCycle = true;
 
@@ -156,6 +157,16 @@ public class ShootAction : BaseAction
                 Unit targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(testGridPosition);
 
                 if (targetUnit.IsEnemy() == unit.IsEnemy()) continue; // Both Units on same 'team'
+
+                Vector3 unitWorldPosition = LevelGrid.Instance.GetWorldPosition(unitGridPosition);
+                Vector3 shootDir = (targetUnit.GetWorldPosition() - unitWorldPosition).normalized;
+                float unitShoulderHeight = 1.7f;
+
+                if (Physics.Raycast(
+                    unitWorldPosition + Vector3.up * unitShoulderHeight,
+                    shootDir,
+                    Vector3.Distance(unitWorldPosition, targetUnit.GetWorldPosition()), obstaclesLayerMask)
+                    ) continue; // Blocked by an Obstacle
 
                 validGridPositionList.Add(testGridPosition);
             }

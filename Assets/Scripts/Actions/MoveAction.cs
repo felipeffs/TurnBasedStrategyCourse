@@ -11,44 +11,65 @@ public class MoveAction : BaseAction
 
     [SerializeField] private int maxMoveDistance = 4;
 
-    private Coroutine currentCO_Move;
+    private Coroutine currentCO_DoPath;
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        Move(gridPosition);
+        List<GridPosition> pathGridPositionList = Pathfinding.Instance.FindPath(unit.GetGridPosition(), gridPosition, out int pathLength);
+
+        DoPath(pathGridPositionList);
 
         ActionStart(onActionComplete);
     }
 
-    private void Move(GridPosition gridPosition)
+    private void DoPath(List<GridPosition> pathGridPositionList)
     {
-        var targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
+        List<Vector3> positionList = new List<Vector3>();
 
-        if (currentCO_Move != null)
+        foreach (GridPosition pathGridPosition in pathGridPositionList)
         {
-            StopCoroutine(currentCO_Move);
+            positionList.Add(LevelGrid.Instance.GetWorldPosition(pathGridPosition));
         }
-        currentCO_Move = StartCoroutine(CO_Move(targetPosition));
+
+        if (currentCO_DoPath != null)
+        {
+            StopCoroutine(currentCO_DoPath);
+        }
+
+        currentCO_DoPath = StartCoroutine(CO_DoPath(positionList));
     }
 
-    private IEnumerator CO_Move(Vector3 targetPosition)
+    private IEnumerator CO_DoPath(List<Vector3> positionList)
     {
+        int currentPositionIndex = 0;
+
         OnStartMoving?.Invoke(this, EventArgs.Empty);
 
-        while (Vector3.Distance(transform.position, targetPosition) > STOPPING_DISTANCE)
+        while (currentPositionIndex < positionList.Count)
         {
-            Vector3 moveDirection = (targetPosition - transform.position).normalized;
-            float moveSpeed = 4f;
-            transform.position += moveDirection * moveSpeed * Time.deltaTime;
-
-            float rotateSpeed = 10f;
-            transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
-
-            yield return null;
+            Vector3 targetPosition = positionList[currentPositionIndex];
+            yield return CO_Move(targetPosition);
+            currentPositionIndex++;
         }
 
         OnStopMoving?.Invoke(this, EventArgs.Empty);
         ActionComplete();
+    }
+
+    private IEnumerator CO_Move(Vector3 targetPosition)
+    {
+        while (Vector3.Distance(transform.position, targetPosition) > STOPPING_DISTANCE)
+        {
+            float rotateSpeed = 10f;
+            Vector3 moveDirection = (targetPosition - transform.position).normalized;
+
+            transform.forward = Vector3.Lerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
+
+            float moveSpeed = 4f;
+            transform.position += moveDirection * moveSpeed * Time.deltaTime;
+
+            yield return null;
+        }
     }
 
     public override List<GridPosition> GetValidActionGridPositionList()
@@ -65,8 +86,21 @@ public class MoveAction : BaseAction
                 GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
 
                 if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition)) continue;
+
                 if (unitGridPosition == testGridPosition) continue; // Same Grid Position where unit is already at
+
                 if (LevelGrid.Instance.HasAnyUnityOnGridPosition(testGridPosition)) continue;
+
+                if (!Pathfinding.Instance.IsWalkableGridPosition(testGridPosition)) continue;
+
+                if (!Pathfinding.Instance.HasPath(unitGridPosition, testGridPosition)) continue;
+
+                int pathfindingDistanceMultiplier = 10;
+                if (Pathfinding.Instance.GetPathLength(unitGridPosition, testGridPosition) > maxMoveDistance * pathfindingDistanceMultiplier)
+                {
+                    // Path length is too long
+                    continue;
+                }
 
                 validGridPositionList.Add(testGridPosition);
             }
