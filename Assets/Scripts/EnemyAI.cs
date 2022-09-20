@@ -5,8 +5,8 @@ using System;
 
 public class EnemyAI : MonoBehaviour
 {
-    private const float TIME_BEFORE_FIRST_ACTION = 2f;
-    private const float TIME_BETWEEN_ACTIONS = .5f;
+    private const float TIME_BEFORE_FIRST_ACTION = 1.5f;
+    private const float TIME_BETWEEN_ACTIONS = 1f;
 
     private Coroutine currentCO_WaitBeforeNextAction;
     private bool isFirstActionTurn;
