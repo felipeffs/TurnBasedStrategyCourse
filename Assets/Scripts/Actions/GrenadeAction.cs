@@ -6,6 +6,7 @@ using UnityEngine;
 public class GrenadeAction : BaseAction
 {
     [SerializeField] private Transform grenadeProjectilePrefab;
+    [SerializeField] private LayerMask obstaclesLayerMask;
     private int maxThrowDistance = 7;
 
     private void ThrowGrenade(GridPosition targetGridPosition)
@@ -47,6 +48,17 @@ public class GrenadeAction : BaseAction
 
                 int testDistance = Mathf.Abs(x) + Mathf.Abs(z);
                 if (testDistance > maxThrowDistance) continue;
+
+                Vector3 unitWorldPosition = LevelGrid.Instance.GetWorldPosition(unitGridPosition);
+                Vector3 targetAreaWorldPosition = LevelGrid.Instance.GetWorldPosition(testGridPosition);
+                Vector3 throwDirection = (targetAreaWorldPosition - unitWorldPosition).normalized;
+                float unitShoulderHeight = 1.7f;
+
+                if (Physics.Raycast(
+                    unitWorldPosition + Vector3.up * unitShoulderHeight,
+                    throwDirection,
+                    Vector3.Distance(unitWorldPosition, targetAreaWorldPosition), obstaclesLayerMask)
+                    ) continue; // Blocked by an Obstacle
 
                 validGridPositionList.Add(testGridPosition);
             }
