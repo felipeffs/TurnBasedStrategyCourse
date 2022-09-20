@@ -18,6 +18,26 @@ public class GrenadeProjectile : MonoBehaviour
 
     private void Update()
     {
+        MoveInArc();
+
+        float reachedTargetDistance = .2f;
+        if (Vector3.Distance(positionXZ, targetPosition) < reachedTargetDistance)
+        {
+            DoDamage();
+
+            OnAnyGrenadeExploded?.Invoke(this, EventArgs.Empty);
+
+            DoExplodeVFX();
+
+            trailRenderer.transform.parent = null;
+            Destroy(gameObject);
+
+            onGrenadeBehaviourComplete();
+        }
+    }
+
+    private void MoveInArc()
+    {
         Vector3 moveDirection = (targetPosition - positionXZ).normalized;
 
         float moveSpeed = 15f;
@@ -29,31 +49,25 @@ public class GrenadeProjectile : MonoBehaviour
         float maxHeight = totalDistance / 4f;
         float positionY = arcYAnimationCurve.Evaluate(distanceNormalized) * maxHeight;
         transform.position = new Vector3(positionXZ.x, positionY, positionXZ.z);
+    }
 
-        float reachedTargetDistance = .2f;
-        if (Vector3.Distance(positionXZ, targetPosition) < reachedTargetDistance)
+    private void DoDamage()
+    {
+        float damageRadius = 4f;
+        Collider[] colliderArray = Physics.OverlapSphere(targetPosition, damageRadius);
+
+        foreach (Collider collider in colliderArray)
         {
-            float damageRadius = 4f;
-            Collider[] colliderArray = Physics.OverlapSphere(targetPosition, damageRadius);
-
-            foreach (Collider collider in colliderArray)
+            if (collider.TryGetComponent<Unit>(out Unit targetUnit))
             {
-                if (collider.TryGetComponent<Unit>(out Unit targetUnit))
-                {
-                    targetUnit.Damage(30);
-                }
+                targetUnit.Damage(30);
             }
-
-            OnAnyGrenadeExploded?.Invoke(this, EventArgs.Empty);
-
-            trailRenderer.transform.parent = null;
-
-            Instantiate(grenadeExplodeVfxPrefab, targetPosition + Vector3.up, Quaternion.identity);
-
-            Destroy(gameObject);
-
-            onGrenadeBehaviourComplete();
         }
+    }
+
+    private void DoExplodeVFX()
+    {
+        Instantiate(grenadeExplodeVfxPrefab, targetPosition + Vector3.up, Quaternion.identity);
     }
 
     public void Setup(GridPosition targetGridPosition, Action onGrenadeBehaviourComplete)
