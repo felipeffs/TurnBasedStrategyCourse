@@ -15,9 +15,12 @@ public class GrenadeProjectile : MonoBehaviour
     private Action onGrenadeBehaviourComplete;
     private float totalDistance;
     private Vector3 positionXZ;
+    private bool isDone = false;
 
     private void Update()
     {
+        if (isDone) return;
+
         MoveInArc();
 
         float reachedTargetDistance = .2f;
@@ -30,10 +33,18 @@ public class GrenadeProjectile : MonoBehaviour
             DoExplodeVFX();
 
             trailRenderer.transform.parent = null;
-            Destroy(gameObject);
 
-            onGrenadeBehaviourComplete();
+            gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
+
+            isDone = true;
+            Invoke("EndAction", 0.5f);
         }
+    }
+
+    private void EndAction()
+    {
+        Destroy(gameObject);
+        onGrenadeBehaviourComplete();
     }
 
     private void MoveInArc()

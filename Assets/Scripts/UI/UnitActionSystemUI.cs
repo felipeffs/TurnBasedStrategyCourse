@@ -60,6 +60,7 @@ public class UnitActionSystemUI : MonoBehaviour
         CreateUnitActionButtons();
         UpdateSelectedVisual();
         UpdateActionPoints();
+        UpdateActionButtonContainerVisibility(true);
         UpdateActionPointsTextVisibility(true);
     }
 
@@ -78,8 +79,11 @@ public class UnitActionSystemUI : MonoBehaviour
 
     public void UnitActionSystem_OnBusyChanged(object sender, bool isBusy)
     {
-        UpdateActionButtonContainerVisibility(!isBusy);
-        UpdateActionPointsTextVisibility(!isBusy);
+        if (UnitActionSystem.Instance.GetSelectedUnit() != null)
+        {
+            UpdateActionButtonContainerVisibility(!isBusy);
+            UpdateActionPointsTextVisibility(!isBusy);
+        }
     }
 
     public void UnitActionSystem_OnActionStarted(object sender, EventArgs e)
@@ -107,7 +111,6 @@ public class UnitActionSystemUI : MonoBehaviour
 
     public void UpdateActionButtonContainerVisibility(bool isActive)
     {
-        if (!TurnSystem.Instance.IsPlayerTurn()) isActive = false;
         actionButtonContainerTransform.gameObject.SetActive(isActive);
     }
 
