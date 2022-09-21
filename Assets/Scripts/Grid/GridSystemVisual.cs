@@ -1,11 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class GridSystemVisual : MonoBehaviour
 {
-    public static GridSystemVisual Instance { private set; get; }
+
+    public static GridSystemVisual Instance { get; private set; }
+
 
     [Serializable]
     public struct GridVisualTypeMaterial
@@ -44,13 +46,14 @@ public class GridSystemVisual : MonoBehaviour
         gridSystemVisualSingleArray = new GridSystemVisualSingle[
             LevelGrid.Instance.GetWidth(),
             LevelGrid.Instance.GetHeight()
-            ];
+        ];
 
         for (int x = 0; x < LevelGrid.Instance.GetWidth(); x++)
         {
             for (int z = 0; z < LevelGrid.Instance.GetHeight(); z++)
             {
                 GridPosition gridPosition = new GridPosition(x, z);
+
                 Transform gridSystemVisualSingleTransform =
                     Instantiate(gridSystemVisualSinglePrefab, LevelGrid.Instance.GetWorldPosition(gridPosition), Quaternion.identity);
 
@@ -67,9 +70,12 @@ public class GridSystemVisual : MonoBehaviour
 
     public void HideAllGridPosition()
     {
-        foreach (var gridSystemVisualSingle in gridSystemVisualSingleArray)
+        for (int x = 0; x < LevelGrid.Instance.GetWidth(); x++)
         {
-            gridSystemVisualSingle.Hide();
+            for (int z = 0; z < LevelGrid.Instance.GetHeight(); z++)
+            {
+                gridSystemVisualSingleArray[x, z].Hide();
+            }
         }
     }
 
@@ -77,9 +83,9 @@ public class GridSystemVisual : MonoBehaviour
     {
         List<GridPosition> gridPositionList = new List<GridPosition>();
 
-        for (int x = -range; x < range; x++)
+        for (int x = -range; x <= range; x++)
         {
-            for (int z = -range; z < range; z++)
+            for (int z = -range; z <= range; z++)
             {
                 GridPosition testGridPosition = gridPosition + new GridPosition(x, z);
 
@@ -91,14 +97,35 @@ public class GridSystemVisual : MonoBehaviour
                 gridPositionList.Add(testGridPosition);
             }
         }
+
+        ShowGridPositionList(gridPositionList, gridVisualType);
+    }
+
+    private void ShowGridPositionRangeSquare(GridPosition gridPosition, int range, GridVisualType gridVisualType)
+    {
+        List<GridPosition> gridPositionList = new List<GridPosition>();
+
+        for (int x = -range; x <= range; x++)
+        {
+            for (int z = -range; z <= range; z++)
+            {
+                GridPosition testGridPosition = gridPosition + new GridPosition(x, z);
+
+                if (!LevelGrid.Instance.IsValidGridPosition(testGridPosition)) continue;
+
+                gridPositionList.Add(testGridPosition);
+            }
+        }
+
         ShowGridPositionList(gridPositionList, gridVisualType);
     }
 
     public void ShowGridPositionList(List<GridPosition> gridPositionList, GridVisualType gridVisualType)
     {
-        foreach (var gridPosition in gridPositionList)
+        foreach (GridPosition gridPosition in gridPositionList)
         {
-            gridSystemVisualSingleArray[gridPosition.x, gridPosition.z].Show(GetGridVisualTypeMaterial(gridVisualType));
+            gridSystemVisualSingleArray[gridPosition.x, gridPosition.z].
+                Show(GetGridVisualTypeMaterial(gridVisualType));
         }
     }
 
@@ -112,6 +139,7 @@ public class GridSystemVisual : MonoBehaviour
         if (selectedAction == null) return;
 
         GridVisualType gridVisualType;
+
         switch (selectedAction)
         {
             default:
@@ -125,6 +153,14 @@ public class GridSystemVisual : MonoBehaviour
                 gridVisualType = GridVisualType.Red;
 
                 ShowGridPositionRange(selectedUnit.GetGridPosition(), shootAction.GetMaxShootDistance(), GridVisualType.RedSoft);
+                break;
+            case GrenadeAction grenadeAction:
+                gridVisualType = GridVisualType.Yellow;
+                break;
+            case SwordAction swordAction:
+                gridVisualType = GridVisualType.Red;
+
+                ShowGridPositionRangeSquare(selectedUnit.GetGridPosition(), swordAction.GetMaxSwordDistance(), GridVisualType.RedSoft);
                 break;
         }
 
