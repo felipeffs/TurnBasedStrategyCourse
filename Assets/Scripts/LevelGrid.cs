@@ -74,25 +74,25 @@ public class LevelGrid : MonoBehaviour
 
     public bool HasAnyUnityOnGridPosition(GridPosition gridPosition)
     {
-        var gridObject = gridSystem.GetGridObject(gridPosition);
+        GridObject gridObject = gridSystem.GetGridObject(gridPosition);
         return gridObject.HasAnyUnty();
     }
 
     public Unit GetUnitAtGridPosition(GridPosition gridPosition)
     {
-        var gridObject = gridSystem.GetGridObject(gridPosition);
+        GridObject gridObject = gridSystem.GetGridObject(gridPosition);
         return gridObject.GetUnit();
     }
 
-    public Door GetDoorAtGridPosition(GridPosition gridPosition)
+    public IInteractable GetInteractableAtGridPosition(GridPosition gridPosition)
     {
-        var gridObject = gridSystem.GetGridObject(gridPosition);
-        return gridObject.GetDoor();
+        GridObject gridObject = gridSystem.GetGridObject(gridPosition);
+        return gridObject.GetInteractable();
     }
 
-    public void SetDoorAtGridPosition(GridPosition gridPosition, Door door)
+    public void SetInteractableAtGridPosition(GridPosition gridPosition, IInteractable interactable)
     {
-        var gridObject = gridSystem.GetGridObject(gridPosition);
-        gridObject.SetDoor(door);
+        GridObject gridObject = gridSystem.GetGridObject(gridPosition);
+        gridObject.SetInteractable(interactable);
     }
 }

@@ -3,14 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Door : MonoBehaviour
+public class Door : MonoBehaviour, IInteractable
 {
     private readonly int doorAnimationHash = Animator.StringToHash("IsOpen");
     [SerializeField] private bool isOpen;
     private GridPosition gridPosition;
     private Animator animator;
-    private Action onInteractComplete;
+    private Action onInteractionComplete;
     private Coroutine currentCO_PlayAndWaitDoorAnimation;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -19,13 +20,13 @@ public class Door : MonoBehaviour
     private void Start()
     {
         gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
-        LevelGrid.Instance.SetDoorAtGridPosition(gridPosition, this);
+        LevelGrid.Instance.SetInteractableAtGridPosition(gridPosition, this);
         OpenOrClose(isOpen);
     }
 
-    public void Interact(Action onInteractComplete)
+    public void Interact(Action onInteractionComplete)
     {
-        this.onInteractComplete = onInteractComplete;
+        this.onInteractionComplete = onInteractionComplete;
         OpenOrClose(!isOpen);
     }
 
@@ -38,7 +39,7 @@ public class Door : MonoBehaviour
         {
             StopCoroutine(currentCO_PlayAndWaitDoorAnimation);
         }
-        currentCO_PlayAndWaitDoorAnimation = StartCoroutine(CO_PlayAndWaitDoorAnimation(onInteractComplete));
+        currentCO_PlayAndWaitDoorAnimation = StartCoroutine(CO_PlayAndWaitDoorAnimation(onInteractionComplete));
     }
 
     public IEnumerator CO_PlayAndWaitDoorAnimation(Action onAnimationComplete)
