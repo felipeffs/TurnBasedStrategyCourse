@@ -108,7 +108,6 @@ public class UnitActionSystemUI : MonoBehaviour
     public void UpdateActionButtonContainerVisibility(bool isActive)
     {
         if (!TurnSystem.Instance.IsPlayerTurn()) isActive = false;
-
         actionButtonContainerTransform.gameObject.SetActive(isActive);
     }
 
