@@ -18,7 +18,7 @@ public class SwordAction : BaseAction
     }
 
     [SerializeField] private float aimingDuration = .7f;
-    [SerializeField] private float SwingingSwordDuration = .5f;
+    [SerializeField] private float SwingingSwordDuration = .7f;
 
     private int maxSwordDistance = 1;
     private Coroutine currentCO_SwordAttack;

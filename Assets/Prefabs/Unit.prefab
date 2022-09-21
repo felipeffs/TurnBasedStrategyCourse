@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aimingDuration: 0.7
-  SwingingSwordDuration: 0.5
+  SwingingSwordDuration: 0.7
 --- !u!1 &3329878160586268977
 GameObject:
   m_ObjectHideFlags: 0
