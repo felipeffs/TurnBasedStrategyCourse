@@ -77,4 +77,9 @@ public class GrenadeAction : BaseAction
     {
         ActionComplete();
     }
+
+    public override int GetActionPointsCost()
+    {
+        return 6;
+    }
 }
