@@ -1,59 +1,73 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class EnemyAI : MonoBehaviour
 {
-    private const float TIME_BEFORE_FIRST_ACTION = 1.5f;
-    private const float TIME_BETWEEN_ACTIONS = 1f;
 
-    private Coroutine currentCO_WaitBeforeNextAction;
-    private bool isFirstActionTurn;
+    private enum State
+    {
+        WaitingForEnemyTurn,
+        TakingTurn,
+        Busy,
+    }
+
+    private State state;
+    private float timer;
+
+    private void Awake()
+    {
+        state = State.WaitingForEnemyTurn;
+    }
 
     private void Start()
     {
         TurnSystem.Instance.OnTurnChanged += TurnSystem_OnTurnChanged;
     }
 
+    private void Update()
+    {
+        if (TurnSystem.Instance.IsPlayerTurn())
+        {
+            return;
+        }
+
+        switch (state)
+        {
+            case State.WaitingForEnemyTurn:
+                break;
+            case State.TakingTurn:
+                timer -= Time.deltaTime;
+                if (timer <= 0f)
+                {
+                    if (TryTakeEnemyAIAction(SetStateTakingTurn))
+                    {
+                        state = State.Busy;
+                    } else
+                    {
+                        // No more enemies have actions they can take, end enemy turn
+                        TurnSystem.Instance.NextTurn();
+                    }
+                }
+                break;
+            case State.Busy:
+                break;
+        }
+    }
+
+    private void SetStateTakingTurn()
+    {
+        timer = 0.5f;
+        state = State.TakingTurn;
+    }
+
     private void TurnSystem_OnTurnChanged(object sender, EventArgs e)
     {
-        if (TurnSystem.Instance.IsPlayerTurn()) return;
-
-        isFirstActionTurn = true;
-
-        WaitBeforeNextAction();
-    }
-
-    private void WaitBeforeNextAction()
-    {
-        if (currentCO_WaitBeforeNextAction != null)
+        if (!TurnSystem.Instance.IsPlayerTurn())
         {
-            StopCoroutine(currentCO_WaitBeforeNextAction);
-        }
-        currentCO_WaitBeforeNextAction = StartCoroutine(CO_WaitBeforeNextAction());
-    }
-
-    private IEnumerator CO_WaitBeforeNextAction()
-    {
-        WaitForSeconds waitTime = new WaitForSeconds(TIME_BETWEEN_ACTIONS);
-
-        if (isFirstActionTurn)
-        {
-            waitTime = new WaitForSeconds(TIME_BEFORE_FIRST_ACTION);
-            isFirstActionTurn = false;
-        }
-
-        yield return waitTime;
-
-        DoNextAction();
-    }
-
-    private void DoNextAction()
-    {
-        if (!TryTakeEnemyAIAction(WaitBeforeNextAction))
-        {
-            TurnSystem.Instance.NextTurn();
+            state = State.TakingTurn;
+            timer = 2f;
         }
     }
 
@@ -66,6 +80,7 @@ public class EnemyAI : MonoBehaviour
                 return true;
             }
         }
+
         return false;
     }
 
@@ -78,6 +93,7 @@ public class EnemyAI : MonoBehaviour
         {
             if (!enemyUnit.CanSpendActionPointsToTakeAction(baseAction))
             {
+                // Enemy cannot afford this action
                 continue;
             }
 
@@ -95,6 +111,7 @@ public class EnemyAI : MonoBehaviour
                     bestBaseAction = baseAction;
                 }
             }
+
         }
 
         if (bestEnemyAIAction != null && enemyUnit.TrySpendActionPointsToTakeAction(bestBaseAction))
