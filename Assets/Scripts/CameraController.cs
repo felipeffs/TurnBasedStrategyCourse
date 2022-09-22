@@ -30,16 +30,8 @@ public class CameraController : MonoBehaviour
 
     private void HandleZoom()
     {
-        float zoomAmount = 1f;
-
-        if (Input.mouseScrollDelta.y > 0)
-        {
-            targetFollowOffset.y -= zoomAmount;
-        }
-        else if (Input.mouseScrollDelta.y < 0)
-        {
-            targetFollowOffset.y += zoomAmount;
-        }
+        float zoomIncreaseAmount = 1f;
+        targetFollowOffset.y += InputManager.Instance.GetCameraZoomAmount() * zoomIncreaseAmount;
 
         targetFollowOffset.y = Mathf.Clamp(targetFollowOffset.y, MIN_FOLLOW_Y_OFFSET, MAX_FOLLOW_Y_OFFSET);
 
@@ -51,14 +43,7 @@ public class CameraController : MonoBehaviour
     {
         var rotationVector = new Vector3(0, 0, 0);
 
-        if (Input.GetKey(KeyCode.Q))
-        {
-            rotationVector.y += 1f;
-        }
-        if (Input.GetKey(KeyCode.E))
-        {
-            rotationVector.y -= 1f;
-        }
+        rotationVector.y = InputManager.Instance.GetCameraRotateAmount();
 
         var rotationSpeed = 100f;
 
@@ -67,27 +52,10 @@ public class CameraController : MonoBehaviour
 
     private void HandleMovement()
     {
-        Vector3 inputMoveDirection = new Vector3(0, 0, 0);
-
-        if (Input.GetKey(KeyCode.W))
-        {
-            inputMoveDirection.z += 1f;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            inputMoveDirection.z -= 1f;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            inputMoveDirection.x -= 1f;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            inputMoveDirection.x += 1f;
-        }
+        Vector2 inputMoveDirection = InputManager.Instance.GetCameraMoveVector();
 
         var moveSpeed = 10f;
-        var moveVector = transform.forward * inputMoveDirection.z + transform.right * inputMoveDirection.x;
+        var moveVector = transform.forward * inputMoveDirection.y + transform.right * inputMoveDirection.x;
 
         transform.position += moveVector * moveSpeed * Time.deltaTime;
     }
